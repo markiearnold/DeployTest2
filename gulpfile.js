@@ -182,13 +182,24 @@ gulp.task('deploy', () => {
     .pipe(ghPages());
 });
 
-gulp.task('markie', function() {
-  var branchName = '';
+gulp.task('createTemp', function() {
   exec("git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\,'", {maxBuffer: 500*1024}, function(error, stdout, stderror){
-    branchName = /[^/]*$/.exec(arguments[1])[0].trim();
+    var branchName = /[^/]*$/.exec(arguments[1])[0].trim();
     gulp.src([paths.dist.root + '/**/*'])
       .pipe(gulp.dest('./temp/' + branchName));
   });
 });
 
+gulp.task('branchDeploy', function() {
+  return gulp.src([paths.temp.root + '/**/*'])
+    .pipe(ghPages({
+      remove: false
+    }));
+});
+
+gulp.task('delTemp', function() {
+  return del('temp/**', {force:true});
+});
+
+gulp.task('markie', ['createTemp', 'branchDeploy']);
 gulp.task('default', ['watch', 'serve', 'images', 'files', 'fonts', 'styles', 'scripts', 'templates']);
