@@ -15,6 +15,7 @@ const ghPages     = require('gulp-gh-pages');
 const sassGlob    = require('gulp-sass-bulk-import');
 const watch       = require('gulp-watch');
 const babel       = require('gulp-babel');
+const runSequence = require('run-sequence');
 const exec        = require('child_process').exec;
 
 
@@ -182,9 +183,10 @@ gulp.task('deploy', () => {
     .pipe(ghPages());
 });
 
-gulp.task('markie', ['createTemp', 'branchDeploy']);
+// gulp.task('markie', ['createTemp', 'branchDeploy']);
 
 gulp.task('createTemp', function() {
+  console.log('createTemp');
   return exec("git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\,'", {maxBuffer: 500*1024}, function(error, stdout, stderror){
     var branchName = /[^/]*$/.exec(arguments[1])[0].trim();
     gulp.src([paths.dist.root + '/**/*'])
@@ -193,6 +195,7 @@ gulp.task('createTemp', function() {
 });
 
 gulp.task('branchDeploy', ['createTemp'], function() {
+  console.log('branchDeploy');
   return gulp.src([paths.temp.root + '/**/*'])
     .pipe(ghPages({
       remove: false
@@ -200,7 +203,15 @@ gulp.task('branchDeploy', ['createTemp'], function() {
 });
 
 gulp.task('delTemp', function() {
+  console.log('delTemp');
   return del('temp/**', {force:true});
+});
+
+gulp.task('markie', function(done) {
+    runSequence('createTemp', 'branchDeploy', 'delTemp', function() {
+        console.log('Run something else');
+        done();
+    });
 });
 
 // gulp.task('markie', gulp.series('createTemp', 'branchDeploy'));
