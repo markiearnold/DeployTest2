@@ -190,7 +190,7 @@ gulp.task('createTemp', function() {
   });
 });
 
-gulp.task('branchDeploy', function() {
+gulp.task('branchDeploy', ['createTemp'], function() {
   return gulp.src([paths.temp.root + '/**/*'])
     .pipe(ghPages({
       remove: false
