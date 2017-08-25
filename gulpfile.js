@@ -182,8 +182,10 @@ gulp.task('deploy', () => {
     .pipe(ghPages());
 });
 
+gulp.task('markie', ['createTemp', 'branchDeploy']);
+
 gulp.task('createTemp', function() {
-  exec("git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\,'", {maxBuffer: 500*1024}, function(error, stdout, stderror){
+  return exec("git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\,'", {maxBuffer: 500*1024}, function(error, stdout, stderror){
     var branchName = /[^/]*$/.exec(arguments[1])[0].trim();
     gulp.src([paths.dist.root + '/**/*'])
       .pipe(gulp.dest('./temp/' + branchName));
@@ -202,5 +204,5 @@ gulp.task('delTemp', function() {
 });
 
 // gulp.task('markie', gulp.series('createTemp', 'branchDeploy'));
-gulp.task('markie', ['branchDeploy']);
+
 gulp.task('default', ['watch', 'serve', 'images', 'files', 'fonts', 'styles', 'scripts', 'templates']);
