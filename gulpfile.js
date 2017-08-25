@@ -201,5 +201,6 @@ gulp.task('delTemp', function() {
   return del('temp/**', {force:true});
 });
 
-gulp.task('markie', ['createTemp', 'branchDeploy']);
+// gulp.task('markie', gulp.series('createTemp', 'branchDeploy'));
+gulp.task('markie', ['branchDeploy']);
 gulp.task('default', ['watch', 'serve', 'images', 'files', 'fonts', 'styles', 'scripts', 'templates']);
