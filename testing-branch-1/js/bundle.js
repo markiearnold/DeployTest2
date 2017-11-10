@@ -1,0 +1,1 @@
+"use strict";var test=function(t,e){return"Test: "+t+" and "+e};console.log(test("yo","bro"));
